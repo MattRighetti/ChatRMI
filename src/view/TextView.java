@@ -13,9 +13,9 @@ public class TextView extends UnicastRemoteObject implements MessageObserver, Re
     private final RemoteController remoteController;
     private final Scanner input;
 
-    public TextView(RemoteController remoteController, Scanner input) throws RemoteException {
+    public TextView(RemoteController remoteController) throws RemoteException {
         this.remoteController = remoteController;
-        this.input = input;
+        this.input = new Scanner(System.in);
     }
 
     public void displayText(String text) {
