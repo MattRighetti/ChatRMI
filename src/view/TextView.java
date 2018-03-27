@@ -24,6 +24,6 @@ public class TextView extends UnicastRemoteObject implements MessageObserver, Re
 
     @Override
     public void onNewMessage(Message message) throws RemoteException {
-        
+
     }
 }
