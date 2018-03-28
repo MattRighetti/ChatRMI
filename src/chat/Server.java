@@ -1,4 +1,6 @@
-import controller.Controller;
+package chat;
+
+import chat.controller.Controller;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
@@ -11,6 +13,6 @@ public class Server {
         System.out.println("Controller exported...");
 
         Registry registry = LocateRegistry.getRegistry();
-        registry.bind("controller", controller);
+        registry.bind("chat", controller);
     }
 }

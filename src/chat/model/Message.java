@@ -1,4 +1,4 @@
-package model;
+package chat.model;
 
 import java.io.Serializable;
 
@@ -8,6 +8,7 @@ public class Message implements Serializable {
     final Group group;
 
     public Message(String message, User user, Group group) {
+        super();
         this.message = message;
         this.user = user;
         this.group = group;
