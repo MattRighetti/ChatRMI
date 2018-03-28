@@ -9,7 +9,7 @@ public class User implements Serializable {
 
     private final transient List<MessageObserver> observers;
 
-    public User(String username, List<MessageObserver> observers) {
+    public User(String username) {
         this.username = username;
         this.observers = new LinkedList<>();
     }
@@ -22,5 +22,8 @@ public class User implements Serializable {
         return username;
     }
 
-
+    @Override
+    public String toString() {
+        return "@" + username;
+    }
 }
