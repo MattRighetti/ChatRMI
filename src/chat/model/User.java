@@ -1,6 +1,7 @@
 package chat.model;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,12 +9,16 @@ public class User implements Serializable {
     private final String username;
     private Group group;
 
-    private final transient List<MessageObserver> observers;
+    List<MessageObserver> observers = new LinkedList<>();
 
-    public User(String username) {
+    public User(String username, Group group) {
         super();
         this.username = username;
-        this.observers = new LinkedList<>();
+        this.group = group;
+    }
+
+    public void observeUser(MessageObserver messageObserver) {
+        observers.add(messageObserver);
     }
 
     public Group getGroup() {
@@ -22,6 +27,22 @@ public class User implements Serializable {
 
     public String getUsername() {
         return username;
+    }
+
+    public Message post(String text) throws RemoteException {
+        Message message = new Message(text, this);
+
+        for (User user : group.getUsers()) {
+            user.receiveMessage(message);
+        }
+
+        return message;
+    }
+
+    public void receiveMessage(Message message) throws RemoteException {
+        for (MessageObserver messageObserver : observers) {
+            messageObserver.onNewMessage(message);
+        }
     }
 
     @Override

@@ -28,29 +28,31 @@ public class TextView extends UnicastRemoteObject implements MessageObserver, Re
      * @throws RemoteException
      */
     public void run() throws RemoteException {
+
         String username;
         User user = null;
         do {
             System.out.println("Provide username:");
             username = input.nextLine();
             if (!username.isEmpty())
-                System.out.println("Username not empty");
-                user = remoteController.login(username, this);
-            System.out.println("Created");
-            onNewUserJoined();
+                try {
+                    user = remoteController.login(username, this, this);
+                } catch (RemoteException e) {
+                    System.out.println("Username already in use");
+                    username = "";
+                }
         } while (username.isEmpty());
+        //remoteController.observeUser(this, user);
+        onNewUserJoined();
 
-        Message message;
         String text;
         do {
             System.out.println("Provide command:");
             text = input.nextLine();
-            message = new Message(text, user, user.getGroup());
-            if (!text.startsWith(QUIT_COMMAND)) {
-                remoteController.sendMessage(message);
-                onNewMessage(message);
+            if (!text.equals(QUIT_COMMAND)) {
+                Message message = remoteController.sendMessage(text, user);
             }
-        } while (text.startsWith(QUIT_COMMAND));
+        } while (!text.equals(QUIT_COMMAND));
 
         remoteController.logout(user);
         onLeave();
@@ -73,7 +75,17 @@ public class TextView extends UnicastRemoteObject implements MessageObserver, Re
 
     @Override
     public void onNewMessage(Message message) throws RemoteException {
-        System.out.println(">>>" + message.getSender() + ":");
+        System.out.print(">>>" + message.getSender().getUsername() + ":");
         System.out.println(message.getMessage());
+    }
+
+    @Override
+    public void error(String message) throws RemoteException {
+        System.err.println(">>>" + message);
+    }
+
+    @Override
+    public void ack(String message) throws RemoteException {
+        System.out.println(">>>" + message);
     }
 }

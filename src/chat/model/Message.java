@@ -7,11 +7,11 @@ public class Message implements Serializable {
     final User user;
     final Group group;
 
-    public Message(String message, User user, Group group) {
+    public Message(String message, User user) {
         super();
         this.message = message;
         this.user = user;
-        this.group = group;
+        this.group = user.getGroup();
     }
 
     public User getSender() {

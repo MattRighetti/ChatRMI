@@ -5,6 +5,7 @@ import java.util.*;
 
 public class Database {
     private static Database database;
+    private final  Group defaultGroup = new Group();
     private final Set<Group> groupsById = new HashSet<>();
     private final Set<User> loggedUsers = new HashSet<>();
 
@@ -18,6 +19,18 @@ public class Database {
         if (database == null)
             database = new Database();
         return database;
+    }
+
+    public Group getDefaultGroup() {
+        return defaultGroup;
+    }
+
+    public User getUserFromDb(String username) {
+        for (User user : loggedUsers) {
+            if (user.getUsername().equals(username))
+                return user;
+        }
+        throw new IllegalArgumentException();
     }
 
     /**
@@ -37,12 +50,14 @@ public class Database {
      * @param username
      * @throws RemoteException
      */
-    public User loginUser(String username) throws RemoteException {
+    public User loginUser(String username, MessageObserver messageObserver) throws RemoteException {
         if (checkUsernameAlreadyInUse(username)) {
             throw new RemoteException("Username already in use:" + username);
         }
 
-        User user = new User(username);
+        User user = new User(username, defaultGroup);
+        user.observeUser(messageObserver);
+        defaultGroup.getUsers().add(user);
         loggedUsers.add(user);
         return user;
     }
@@ -53,12 +68,5 @@ public class Database {
         }
 
         loggedUsers.remove(user);
-    }
-
-    public void sendMessage(Message message) throws RemoteException {
-        if (message.group.getUsers().contains(message.getSender())) {
-            message.group.getMessages().add(message);
-        }
-        System.err.println("Error not in group");
     }
 }
