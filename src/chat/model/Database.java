@@ -6,7 +6,7 @@ import java.util.*;
 public class Database {
     private static Database database;
     private final  Group defaultGroup = new Group();
-    private final Set<Group> groupsById = new HashSet<>();
+    private final Set<Group> groupsById = new HashSet<>(); // DUMMY
     private final Set<User> loggedUsers = new HashSet<>();
 
     // SINGLETON
@@ -55,9 +55,9 @@ public class Database {
             throw new RemoteException("Username already in use:" + username);
         }
 
-        User user = new User(username, defaultGroup);
+        User user = new User(username, getDefaultGroup());
         user.observeUser(messageObserver);
-        defaultGroup.getUsers().add(user);
+        getDefaultGroup().getUsers().add(user);
         loggedUsers.add(user);
         return user;
     }

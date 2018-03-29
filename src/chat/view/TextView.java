@@ -1,7 +1,6 @@
 package chat.view;
 
 import chat.model.Message;
-import chat.model.User;
 import chat.controller.RemoteController;
 import chat.model.MessageObserver;
 
@@ -10,8 +9,9 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Scanner;
 
 public class TextView extends UnicastRemoteObject implements MessageObserver, RemoteTextView {
-
     private static final String QUIT_COMMAND = ":q";
+    String username; // To avoid using the User model class
+
     private final RemoteController remoteController;
     private final Scanner input;
 
@@ -20,57 +20,82 @@ public class TextView extends UnicastRemoteObject implements MessageObserver, Re
         this.input = new Scanner(System.in);
     }
 
-    /**
-     * Runna la TextView che:
-     * - Chiede lo username e controlla se non è già utilizzato
-     * - Continua a inviare messaggi
-     * - Quando viene scritto ":q" esce e viene disconnesso
-     * @throws RemoteException
-     */
-    public void run() throws RemoteException {
 
-        String username;
-        User user = null;
+    public void run() throws RemoteException {
+        chooseUsernamePhase(input);
+        messagingPhase(input);
+        logoutPhase();
+    }
+
+    /**
+     *
+     *
+     * PHASES ------------------------------------------------------------------------
+     *
+     *
+     */
+
+    public void chooseUsernamePhase(Scanner input) throws RemoteException {
         do {
-            System.out.println("Provide username:");
+            System.out.println("Choose username:");
             username = input.nextLine();
-            if (!username.isEmpty())
+            if (!username.isEmpty()) {
                 try {
-                    user = remoteController.login(username, this, this);
+                    remoteController.login(username, this, this);
                 } catch (RemoteException e) {
-                    System.out.println("Username already in use");
+                    System.err.println("Username already in use, choose a different one");
                     username = "";
                 }
-        } while (username.isEmpty());
-        //remoteController.observeUser(this, user);
-        onNewUserJoined();
-
-        String text;
-        do {
-            System.out.println("Provide command:");
-            text = input.nextLine();
-            if (!text.equals(QUIT_COMMAND)) {
-                Message message = remoteController.sendMessage(text, user);
             }
-        } while (!text.equals(QUIT_COMMAND));
-
-        remoteController.logout(user);
-        onLeave();
-        System.out.println("Disconnected");
+        } while (username.isEmpty());
     }
+
+    public void chooseGroupPhase(Scanner input) throws RemoteException {
+        String groupName;
+        do {
+            System.out.println("Choose group:");
+            groupName = input.nextLine();
+            if (!groupName.isEmpty()) {
+                //TODO implement function
+            }
+        } while (groupName.isEmpty());
+    }
+
+    public void messagingPhase(Scanner input) throws RemoteException {
+        String text;
+        Message message;
+        System.out.println("Welcome!");
+        do {
+            text = input.nextLine();
+            if (!text.equals(QUIT_COMMAND))
+                message = remoteController.sendMessage(text, username);
+        } while (!text.equals(QUIT_COMMAND));
+    }
+
+    public void logoutPhase() throws RemoteException {
+        remoteController.logout(username, this);
+    }
+
+    /**
+     *
+     *
+     * PHASES ------------------------------------------------------------------------
+     *
+     *
+     */
 
     public void displayText(String text) {
         System.out.println(">>>>" + text);
     }
 
     @Override
-    public void onNewUserJoined() throws RemoteException {
-        System.out.println("New user joined");
+    public void onNewUserJoined(String usernameJoined) throws RemoteException {
+        System.out.println(usernameJoined + " joined the group");
     }
 
     @Override
-    public void onLeave() throws RemoteException {
-        System.out.println("User left");
+    public void onLeave(String usernameLeft) throws RemoteException {
+        System.out.println(usernameLeft + " left");
     }
 
     @Override

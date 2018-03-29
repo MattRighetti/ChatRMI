@@ -29,12 +29,38 @@ public class User implements Serializable {
         return username;
     }
 
+    public void forEachFunction(String operation, String username) throws RemoteException {
+        getGroup().getUsers().stream().filter(x -> !x.equals(this)).forEach(x -> {
+            try {
+                x.receiveMessage(operation, username);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public void forEachFunction(Message message) throws RemoteException {
+        getGroup().getUsers().stream().filter(x -> !x.equals(this)).forEach(x -> {
+            try {
+                x.receiveMessage(message);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public void onLogin(String username) throws RemoteException {
+        forEachFunction("login", username);
+    }
+
+    public void onLogout(String username) throws RemoteException {
+        forEachFunction("logout", username);
+    }
+
     public Message post(String text) throws RemoteException {
         Message message = new Message(text, this);
 
-        for (User user : group.getUsers()) {
-            user.receiveMessage(message);
-        }
+        forEachFunction(message);
 
         return message;
     }
@@ -43,6 +69,19 @@ public class User implements Serializable {
         for (MessageObserver messageObserver : observers) {
             messageObserver.onNewMessage(message);
         }
+    }
+
+    public void receiveMessage(String operation, String usr) throws RemoteException {
+        if (operation.equals("logout")) {
+            for (MessageObserver messageObserver : observers) {
+                messageObserver.onLeave(usr);
+            }
+        } else if (operation.equals("login")) {
+            for (MessageObserver messageObserver : observers) {
+                messageObserver.onNewUserJoined(usr);
+            }
+        }
+
     }
 
     @Override

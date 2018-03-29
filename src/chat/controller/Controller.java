@@ -21,7 +21,7 @@ public class Controller extends UnicastRemoteObject implements RemoteController 
         System.out.println("Database retrieved");
     }
 
-    public synchronized User getUserSender(String username) {
+    public synchronized User getSender(String username) {
         return database.getUserFromDb(username);
     }
 
@@ -30,24 +30,30 @@ public class Controller extends UnicastRemoteObject implements RemoteController 
     }
 
     @Override
-    public synchronized User login(String username, RemoteTextView remoteTextView, MessageObserver messageObserver) throws RemoteException {
+    public synchronized void login(String username, RemoteTextView remoteTextView,
+                                   MessageObserver messageObserver) throws RemoteException {
+
         User user;
         user = database.loginUser(username, messageObserver);
         if(user == null)
             throw new RemoteException("User incorrect");
         views.add(remoteTextView);
+        user.onLogin(username);
         remoteTextView.ack("Logged in as @" + username);
-        return user;
     }
 
     @Override
-    public synchronized void logout(User user) throws RemoteException {
+    public synchronized void logout(String username, RemoteTextView remoteTextView) throws RemoteException {
+        User user = getSender(username);
+        remoteTextView.ack("You disconnected");
+        user.onLogout(username);
         database.logoutUser(user);
+        views.remove(remoteTextView);
     }
 
     @Override
-    public synchronized Message sendMessage(String message, User sender) throws RemoteException {
-        User user = getUserSender(sender.getUsername());
+    public synchronized Message sendMessage(String message, String username) throws RemoteException {
+        User user = getSender(username);
         return user.post(message);
     }
 }
