@@ -30,7 +30,12 @@ public class Controller extends UnicastRemoteObject implements RemoteController 
     }
 
     @Override
-    public synchronized void login(String username, RemoteTextView remoteTextView,
+    public synchronized void chooseGroup(String groupName, String username) {
+        database.getOrCreateGroup(groupName);
+    }
+
+    @Override
+    public synchronized void login(String username, String groupName, RemoteTextView remoteTextView,
                                    MessageObserver messageObserver) throws RemoteException {
 
         User user;

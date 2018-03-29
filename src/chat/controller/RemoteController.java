@@ -9,9 +9,11 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface RemoteController extends Remote {
-    void login(String username, RemoteTextView remoteTextView, MessageObserver messageObserver) throws RemoteException;
+    void login(String username, String groupName, RemoteTextView remoteTextView, MessageObserver messageObserver) throws RemoteException;
 
     void logout(String username, RemoteTextView remoteTextView) throws RemoteException;
 
     Message sendMessage(String message, String username) throws RemoteException;
+
+    void chooseGroup(String groupName, String username);
 }

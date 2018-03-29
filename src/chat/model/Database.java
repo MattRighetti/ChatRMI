@@ -5,7 +5,7 @@ import java.util.*;
 
 public class Database {
     private static Database database;
-    private final  Group defaultGroup = new Group();
+    private final  Group defaultGroup = new Group("default");
     private final Set<Group> groupsById = new HashSet<>(); // DUMMY
     private final Set<User> loggedUsers = new HashSet<>();
 
@@ -31,6 +31,25 @@ public class Database {
                 return user;
         }
         throw new IllegalArgumentException();
+    }
+
+    public Group getGroupFromDb(String groupName) throws RemoteException {
+        for (Group group : groupsById)
+            if (group.getGroupName().equals(groupName))
+                return group;
+
+        throw new RemoteException();
+    }
+
+    public void getOrCreateGroup(String groupName) {
+        for (Group group : groupsById) {
+            if (group.getGroupName().equals(groupName)) {
+                //group.getUsers().add(getUserFromDb(username));
+            }
+        }
+        Group group = new Group(groupName);
+        //group.getUsers().add(getUserFromDb(username));
+        groupsById.add(group);
     }
 
     /**

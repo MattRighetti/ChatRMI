@@ -13,12 +13,12 @@ public class Group implements Serializable {
     private List<Message> messages;
     private Set<User> users;
 
-    public Group() {
+    public Group(String groupName) {
         super();
         this.uniqueGroupID = groupID;
         this.messages = new LinkedList<>();
         this.users = new HashSet<>();
-        this.groupName = "group" + groupID;
+        this.groupName = groupName;
         groupID++;
     }
 

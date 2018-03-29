@@ -11,6 +11,7 @@ import java.util.Scanner;
 public class TextView extends UnicastRemoteObject implements MessageObserver, RemoteTextView {
     private static final String QUIT_COMMAND = ":q";
     String username; // To avoid using the User model class
+    String groupName;
 
     private final RemoteController remoteController;
     private final Scanner input;
@@ -41,7 +42,8 @@ public class TextView extends UnicastRemoteObject implements MessageObserver, Re
             username = input.nextLine();
             if (!username.isEmpty()) {
                 try {
-                    remoteController.login(username, this, this);
+
+                    remoteController.login(username, groupName, this, this);
                 } catch (RemoteException e) {
                     System.err.println("Username already in use, choose a different one");
                     username = "";
@@ -51,12 +53,11 @@ public class TextView extends UnicastRemoteObject implements MessageObserver, Re
     }
 
     public void chooseGroupPhase(Scanner input) throws RemoteException {
-        String groupName;
         do {
             System.out.println("Choose group:");
             groupName = input.nextLine();
             if (!groupName.isEmpty()) {
-                //TODO implement function
+                remoteController.chooseGroup(groupName, username);
             }
         } while (groupName.isEmpty());
     }
