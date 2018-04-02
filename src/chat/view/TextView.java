@@ -79,10 +79,6 @@ public class TextView extends UnicastRemoteObject implements MessageObserver, Re
      *
      */
 
-    public void displayText(String text) {
-        System.out.println(">>>>" + text);
-    }
-
     @Override
     public void onNewUserJoined(String usernameJoined) throws RemoteException {
         System.out.println(usernameJoined + " joined the group");
