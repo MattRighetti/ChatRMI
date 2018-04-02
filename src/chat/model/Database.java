@@ -67,6 +67,7 @@ public class Database {
             throw new RemoteException("User not in Set" + user);
         }
 
+        getGroup(user.getGroup().getGroupName()).getUsers().remove(user);
         loggedUsers.remove(user);
     }
 }

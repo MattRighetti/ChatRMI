@@ -28,6 +28,12 @@ public class User implements Serializable {
         return username;
     }
 
+    /**
+     * Foreach function dedicated to the login/logout phase
+     * @param operation
+     * @param username
+     * @throws RemoteException
+     */
     public void forEachFunction(String operation, String username) throws RemoteException {
         getGroup().getUsers().stream().filter(x -> !x.equals(this)).forEach(x -> {
             try {
@@ -38,6 +44,11 @@ public class User implements Serializable {
         });
     }
 
+    /**
+     * Foreach function dedicated to the messaging phase
+     * @param message
+     * @throws RemoteException
+     */
     public void forEachFunction(Message message) throws RemoteException {
         getGroup().getUsers().stream().filter(x -> !x.equals(this)).forEach(x -> {
             try {
