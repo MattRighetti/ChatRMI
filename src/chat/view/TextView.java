@@ -23,7 +23,7 @@ public class TextView extends UnicastRemoteObject implements MessageObserver, Re
 
 
     public void run() throws RemoteException {
-        chooseUsernamePhase(input);
+        chooseUsernameGroupPhase(input);
         messagingPhase(input);
         logoutPhase();
     }
@@ -36,7 +36,7 @@ public class TextView extends UnicastRemoteObject implements MessageObserver, Re
      *
      */
 
-    public void chooseUsernamePhase(Scanner input) throws RemoteException {
+    public void chooseUsernameGroupPhase(Scanner input) throws RemoteException {
         do {
             System.out.println("Choose username:");
             username = input.nextLine();

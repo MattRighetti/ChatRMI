@@ -5,7 +5,6 @@ import java.util.*;
 
 public class Database {
     private static Database database;
-    private final  Group defaultGroup = new Group("default");
     private final Set<Group> groupsById = new HashSet<>(); // DUMMY
     private final Set<User> loggedUsers = new HashSet<>();
 
@@ -19,10 +18,6 @@ public class Database {
         if (database == null)
             database = new Database();
         return database;
-    }
-
-    public Group getDefaultGroup() {
-        return defaultGroup;
     }
 
     public User getUserFromDb(String username) {
@@ -53,25 +48,6 @@ public class Database {
      */
     public boolean checkUsernameAlreadyInUse(String username) {
         return loggedUsers.stream().map(User::getUsername).anyMatch(x -> x.equals(username));
-    }
-
-    /**
-     * Checks if the username is already used by other Clients
-     * if not -> adds the new User to the HashSet<User>
-     *
-     * @param username
-     * @throws RemoteException
-     */
-    public User loginUser(String username, MessageObserver messageObserver) throws RemoteException {
-        if (checkUsernameAlreadyInUse(username)) {
-            throw new RemoteException("Username already in use:" + username);
-        }
-
-        User user = new User(username, getDefaultGroup(), messageObserver);
-        user.observeUser(messageObserver);
-        getDefaultGroup().getUsers().add(user);
-        loggedUsers.add(user);
-        return user;
     }
 
     public User login(String username, String groupName, MessageObserver messageObserver) throws RemoteException {
