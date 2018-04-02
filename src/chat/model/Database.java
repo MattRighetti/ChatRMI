@@ -33,23 +33,16 @@ public class Database {
         throw new IllegalArgumentException();
     }
 
-    public Group getGroupFromDb(String groupName) throws RemoteException {
-        for (Group group : groupsById)
-            if (group.getGroupName().equals(groupName))
-                return group;
-
-        throw new RemoteException();
-    }
-
-    public void getOrCreateGroup(String groupName) {
+    public Group getGroup(String groupName) {
         for (Group group : groupsById) {
             if (group.getGroupName().equals(groupName)) {
-                //group.getUsers().add(getUserFromDb(username));
+                return group;
             }
         }
+
         Group group = new Group(groupName);
-        //group.getUsers().add(getUserFromDb(username));
         groupsById.add(group);
+        return group;
     }
 
     /**
@@ -74,10 +67,22 @@ public class Database {
             throw new RemoteException("Username already in use:" + username);
         }
 
-        User user = new User(username, getDefaultGroup());
+        User user = new User(username, getDefaultGroup(), messageObserver);
         user.observeUser(messageObserver);
         getDefaultGroup().getUsers().add(user);
         loggedUsers.add(user);
+        return user;
+    }
+
+    public User login(String username, String groupName, MessageObserver messageObserver) throws RemoteException {
+        if (checkUsernameAlreadyInUse(username)) {
+            throw new RemoteException("Username already in use: " + username);
+        }
+
+        Group group = getGroup(groupName);
+        User user = new User(username, group, messageObserver);
+        loggedUsers.add(user);
+        group.getUsers().add(user);
         return user;
     }
 

@@ -25,21 +25,12 @@ public class Controller extends UnicastRemoteObject implements RemoteController 
         return database.getUserFromDb(username);
     }
 
-    public synchronized void observeUser(MessageObserver messageObserver, User user) {
-        database.getUserFromDb(user.getUsername()).observeUser(messageObserver);
-    }
-
-    @Override
-    public synchronized void chooseGroup(String groupName, String username) {
-        database.getOrCreateGroup(groupName);
-    }
-
     @Override
     public synchronized void login(String username, String groupName, RemoteTextView remoteTextView,
                                    MessageObserver messageObserver) throws RemoteException {
 
         User user;
-        user = database.loginUser(username, messageObserver);
+        user = database.login(username, groupName, messageObserver);
         if(user == null)
             throw new RemoteException("User incorrect");
         views.add(remoteTextView);

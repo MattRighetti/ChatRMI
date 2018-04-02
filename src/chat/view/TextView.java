@@ -41,25 +41,19 @@ public class TextView extends UnicastRemoteObject implements MessageObserver, Re
             System.out.println("Choose username:");
             username = input.nextLine();
             if (!username.isEmpty()) {
-                try {
-
-                    remoteController.login(username, groupName, this, this);
-                } catch (RemoteException e) {
-                    System.err.println("Username already in use, choose a different one");
-                    username = "";
+                System.out.println("Choose group:");
+                groupName = input.nextLine();
+                if (!groupName.isEmpty()) {
+                    try {
+                        remoteController.login(username, groupName, this, this);
+                    } catch (RemoteException e) {
+                        System.err.println("Username already in use, choose a different one");
+                        username = "";
+                        groupName = "";
+                    }
                 }
             }
         } while (username.isEmpty());
-    }
-
-    public void chooseGroupPhase(Scanner input) throws RemoteException {
-        do {
-            System.out.println("Choose group:");
-            groupName = input.nextLine();
-            if (!groupName.isEmpty()) {
-                remoteController.chooseGroup(groupName, username);
-            }
-        } while (groupName.isEmpty());
     }
 
     public void messagingPhase(Scanner input) throws RemoteException {

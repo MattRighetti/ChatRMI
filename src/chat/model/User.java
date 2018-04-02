@@ -2,23 +2,22 @@ package chat.model;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.util.LinkedList;
-import java.util.List;
 
 public class User implements Serializable {
     private final String username;
     private Group group;
 
-    List<MessageObserver> observers = new LinkedList<>();
+    MessageObserver observer;
 
-    public User(String username, Group group) {
+    public User(String username, Group group, MessageObserver messageObserver) {
         super();
         this.username = username;
         this.group = group;
+        this.observer = messageObserver;
     }
 
     public void observeUser(MessageObserver messageObserver) {
-        observers.add(messageObserver);
+        observer = messageObserver;
     }
 
     public Group getGroup() {
@@ -66,20 +65,14 @@ public class User implements Serializable {
     }
 
     public void receiveMessage(Message message) throws RemoteException {
-        for (MessageObserver messageObserver : observers) {
-            messageObserver.onNewMessage(message);
-        }
+        observer.onNewMessage(message);
     }
 
     public void receiveMessage(String operation, String usr) throws RemoteException {
         if (operation.equals("logout")) {
-            for (MessageObserver messageObserver : observers) {
-                messageObserver.onLeave(usr);
-            }
+            observer.onLeave(usr);
         } else if (operation.equals("login")) {
-            for (MessageObserver messageObserver : observers) {
-                messageObserver.onNewUserJoined(usr);
-            }
+            observer.onNewUserJoined(usr);
         }
 
     }
