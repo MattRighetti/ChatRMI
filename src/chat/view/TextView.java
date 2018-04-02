@@ -58,12 +58,11 @@ public class TextView extends UnicastRemoteObject implements MessageObserver, Re
 
     public void messagingPhase(Scanner input) throws RemoteException {
         String text;
-        Message message;
         System.out.println("Welcome!");
         do {
             text = input.nextLine();
             if (!text.equals(QUIT_COMMAND))
-                message = remoteController.sendMessage(text, username);
+                remoteController.sendMessage(text, username);
         } while (!text.equals(QUIT_COMMAND));
     }
 

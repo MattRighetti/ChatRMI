@@ -48,8 +48,8 @@ public class Controller extends UnicastRemoteObject implements RemoteController 
     }
 
     @Override
-    public synchronized Message sendMessage(String message, String username) throws RemoteException {
+    public synchronized void sendMessage(String message, String username) throws RemoteException {
         User user = getSender(username);
-        return user.post(message);
+        user.post(message);
     }
 }

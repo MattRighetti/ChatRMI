@@ -1,6 +1,5 @@
 package chat.controller;
 
-import chat.model.Message;
 import chat.model.MessageObserver;
 import chat.view.RemoteTextView;
 
@@ -12,5 +11,5 @@ public interface RemoteController extends Remote {
 
     void logout(String username, RemoteTextView remoteTextView) throws RemoteException;
 
-    Message sendMessage(String message, String username) throws RemoteException;
+    void sendMessage(String message, String username) throws RemoteException;
 }
