@@ -1,3 +1,6 @@
-.idea/
+.idea
 ChatRMI.iml
-out/
+out
+classloading/common/*
+classloading/client/*
+classloading/server/*

@@ -17,8 +17,8 @@ The tree should look something like this:
 
 - Compile (`javac`) all the classes and put them in the same way I showed you, including .sh files
 - Fire up the Server running the `./launch_nanohttpd.sh` file
-- Start up the RMI Registry `./compile_move.sh` file
+- Start up the RMI Registry `./launch_registry.sh` file
 (if this does not execute you should try to make it executable with
-`chmod +x compile_move.sh`)
+`chmod +x launch_registry.sh`)
 - Launch the Server 
 - Launch the Client

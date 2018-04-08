@@ -1,5 +1,3 @@
-package chat.model;
-
 import java.rmi.RemoteException;
 import java.util.*;
 

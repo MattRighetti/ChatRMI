@@ -1,5 +1,3 @@
-package chat.view;
-
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 

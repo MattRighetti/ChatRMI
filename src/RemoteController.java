@@ -1,8 +1,3 @@
-package chat.controller;
-
-import chat.model.MessageObserver;
-import chat.view.RemoteTextView;
-
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 

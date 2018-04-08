@@ -1,5 +1,3 @@
-package chat.model;
-
 import java.io.Serializable;
 import java.rmi.RemoteException;
 
